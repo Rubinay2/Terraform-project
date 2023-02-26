@@ -140,7 +140,7 @@ resource "aws_nat_gateway" "Prod-Nat-gateway" {
 
 resource "aws_route_table_association" "b" {
   gateway_id     = aws_internet_gateway.Prod-IGW.id
-  route_table_id = aws_route_table.Prod-pub-route-table.id
+  route_table_id = aws_route_table.Prod-priv-route-table.id
 }
 
 
