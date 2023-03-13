@@ -1,7 +1,7 @@
 # Tenacity network configuration 
 
 resource "aws_vpc" "Tenacity-VPC" {
-  cidr_block       = "10.0.0.0/16"
+  cidr_block       = var.cidr_block
   instance_tenancy = "default"
   enable_dns_hostnames = true
   enable_dns_support = true
@@ -10,11 +10,11 @@ resource "aws_vpc" "Tenacity-VPC" {
   }
 }
 
-# Creating Public Subnets
+# Creating Public Subnet
 
 resource "aws_subnet" "Prod-pub-sub1" {
   vpc_id     = aws_vpc.Tenacity-VPC.id
-  cidr_block = "10.0.1.0/24"
+  cidr_block = var.pub-sub1-cidr_block
   availability_zone = "eu-west-2a"
 
   tags = {
@@ -25,7 +25,7 @@ resource "aws_subnet" "Prod-pub-sub1" {
 
 resource "aws_subnet" "Prod-pub-sub2" {
   vpc_id     = aws_vpc.Tenacity-VPC.id
-  cidr_block = "10.0.2.0/24"
+  cidr_block = var.pub-sub2-cidr_block
   availability_zone = "eu-west-2b"
 
   tags = {
@@ -37,7 +37,7 @@ resource "aws_subnet" "Prod-pub-sub2" {
 
 resource "aws_subnet" "Prod-priv-sub1" {
   vpc_id     = aws_vpc.Tenacity-VPC.id
-  cidr_block = "10.0.3.0/24"
+  cidr_block = var.prod-priv-sub1-cidr_block
 
   tags = {
     Name = "Prod-priv-sub1"
@@ -46,7 +46,7 @@ resource "aws_subnet" "Prod-priv-sub1" {
 
 resource "aws_subnet" "Prod-priv-sub2" {
   vpc_id     = aws_vpc.Tenacity-VPC.id
-  cidr_block = "10.0.4.0/24"
+  cidr_block = var.prod-priv-sub2-cidr_block
 
   tags = {
     Name = "Prod-priv-sub2"
@@ -113,7 +113,7 @@ resource "aws_internet_gateway" "Prod-IGW" {
 resource "aws_route_table" "Prod-pub-route-tabble-IGW" {
   vpc_id = "${aws_vpc.Tenacity-VPC.id}"
 route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.IG-cidr_block
     gateway_id = aws_internet_gateway.Prod-IGW.id
   }
 
@@ -140,7 +140,7 @@ resource "aws_nat_gateway" "Prod-Nat-gateway" {
 
 resource "aws_route_table_association" "b" {
   gateway_id     = aws_internet_gateway.Prod-IGW.id
-  route_table_id = aws_route_table.Prod-priv-route-table.id
+  route_table_id = aws_route_table.Prod-pub-route-table.id
 }
 
 
